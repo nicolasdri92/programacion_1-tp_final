@@ -23,14 +23,17 @@ def main() -> None:
         while (retorno != '0'):
             retorno = menu()
             if retorno in "0123":
-                if (retorno == '1'):
-                    handlerPaciente()
-                elif (retorno == '2'):
-                    return
+                match retorno:
+                    case '1':
+                        handlerPaciente()
+                    case '2':
+                        return
                     # handlerHistoriaClinica()
-                elif (retorno == '3'):
-                    return
+                    case '3':
+                        return
                     # handlerProfesional()
+                    case '0':
+                        return
             else:
                 clear()
                 print(input(INVALID_CODE))

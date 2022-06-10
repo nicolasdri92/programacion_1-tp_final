@@ -1,4 +1,5 @@
 from services.handlerIO import writeJSON
+from lib.common import clear
 
 
 def searchDict(codigo: str, list: list) -> dict:
@@ -17,3 +18,4 @@ def searchIndex(codigo: str, list: list) -> int:
 
 def save(data: list, filename: str) -> None:
     writeJSON(data, filename)
+    clear()

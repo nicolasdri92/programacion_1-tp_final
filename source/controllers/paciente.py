@@ -1,3 +1,4 @@
+import math
 from services.handlerIO import readTXT, readJSON
 from services.helper import *
 from services.validation import isValid
@@ -17,7 +18,7 @@ class Paciente:
         self.apellido = input("Apellido: ")
         self.nombre = input("Nombre: ")
         self.nacimiento = input("Fecha de nacimiento: ")
-        self.nacionalidad = input("Nacionalidad: ")
+        self.nacionalidad = getNacionalidad()
 
     def list() -> None:
         breakLine()
@@ -29,7 +30,7 @@ class Paciente:
                     f"{item['id']}         {item['documento']} {item['apellido']}  {item['nombre']}    {item['nacimiento']}    {item['nacionalidad']}")
         else:
             breakLine()
-            print(input("No hay pacientes cargados. Presione Enter..."))
+            print("No hay pacientes cargados")
 
     def update(index: int, new_data: dict) -> None:
         data[PACIENTES][index].update(new_data)
@@ -44,6 +45,8 @@ def menuCrear() -> None:
     paciente = Paciente()
     id = readTXT()
     data[PACIENTES].append(iPaciente(paciente, id))
+    save(data, PACIENTES)
+    print(input("Paciente creado. Presione Enter..."))
 
 
 def menuListar() -> None:
@@ -59,32 +62,42 @@ def menuEditar() -> None:
     print("#### ACTUALIZAR PACIENTE ####")
     Paciente.list()
     breakLine()
-    codigo = input("Codigo del paciente: ")
-    if not (isValid(data[PACIENTES], codigo)):
-        clear()
-        print(input(INVALID_CODE))
-        menuEditar()
-    else:
-        clear()
-        id = searchDict(codigo, data[PACIENTES])
-        paciente = Paciente()
-        index = searchIndex(
-            codigo, data[PACIENTES])
-        Paciente.update(index, iPaciente(paciente, id))
-
+    if len(data[PACIENTES]) > 0 :
+        codigo = inputCode()
+        if not (isValid(data[PACIENTES], codigo)):
+            clear()
+            print(input(INVALID_CODE))
+            menuEditar()
+        else:
+            clear()
+            id = searchDict(codigo, data[PACIENTES])
+            paciente = Paciente()
+            index = searchIndex(
+                codigo, data[PACIENTES])
+            Paciente.update(index, iPaciente(paciente, id))
+            save(data, PACIENTES)
+            print(input("Paciente actualizado. Presione Enter..."))
+    else: 
+        print(input("Presione Enter para continuar..."))
 
 def menuRemover() -> None:
     clear()
     print("#### ELIMINAR PACIENTE ####")
     Paciente.list()
     breakLine()
-    codigo = input("Codigo del paciente: ")
-    if not (isValid(data[PACIENTES], codigo)):
-        clear()
-        print(input(INVALID_CODE))
-        menuRemover()
-    else:
-        Paciente.remove(searchIndex(codigo, data[PACIENTES]))
+    if len(data[PACIENTES]) > 0 :
+        codigo = inputCode()
+        if not (isValid(data[PACIENTES], codigo)):
+            clear()
+            print(input(INVALID_CODE))
+            menuRemover()
+        else:
+            Paciente.remove(searchIndex(codigo, data[PACIENTES]))
+            save(data, PACIENTES)
+            print(input("Paciente eliminado. Presione Enter..."))
+    else: 
+        print(input("Presione Enter para continuar..."))
+
 
 
 def iPaciente(entidad: Paciente, id: str) -> dict:
@@ -96,6 +109,14 @@ def iPaciente(entidad: Paciente, id: str) -> dict:
         'nacimiento': entidad.nacimiento,
         'nacionalidad': entidad.nacionalidad
     }
+
+def inputCode():
+    value = input("Codigo del paciente: (Cancelar) ")
+    return handlerPaciente() if(value == '') else value
+
+def getNacionalidad() -> str:
+    value = input("Nacionalidad: (Argentina) ")
+    return 'Argentina' if(value == '') else value
 
 
 def menu() -> str:
@@ -116,23 +137,17 @@ def handlerPaciente() -> None:
     while (retorno != '0'):
         retorno = menu()
         if retorno in "01234":
-            if (retorno == '1'):
-                menuListar()
-            elif (retorno == '2'):
-                menuCrear()
-                save(data, PACIENTES)
-                clear()
-                print(input("Paciente creado. Presione Enter..."))
-            elif (retorno == '3'):
-                menuEditar()
-                save(data, PACIENTES)
-                clear()
-                print(input("Paciente actualizado. Presione Enter..."))
-            elif (retorno == '4'):
-                menuRemover()
-                save(data, PACIENTES)
-                clear()
-                print(input("Paciente eliminado. Presione Enter..."))
+            match retorno:
+                case '1':
+                    menuListar()
+                case '2':
+                    menuCrear()
+                case '3':
+                    menuEditar()
+                case '4':
+                    menuRemover()
+                case '0':
+                    return
         else:
             clear()
             print(input(INVALID_CODE))
