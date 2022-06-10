@@ -1,8 +1,8 @@
-import os
-
-from services.handlerIO import readTXT, readJSON, writeJSON
-from lib.constants import PACIENTES
-from lib.common import cls
+from services.handlerIO import readTXT, readJSON
+from services.helper import *
+from services.validation import isValid
+from lib.common import *
+from lib.constants import *
 
 data = readJSON(PACIENTES)
 if (len(data) == 0):
@@ -11,113 +11,129 @@ if (len(data) == 0):
 
 class Paciente:
 
-    def __init__(self):
-        print("\n")
+    def __init__(self) -> None:
+        breakLine()
         self.doc = input("Documento de identidad: ")
         self.apellido = input("Apellido: ")
         self.nombre = input("Nombre: ")
         self.nacimiento = input("Fecha de nacimiento: ")
         self.nacionalidad = input("Nacionalidad: ")
 
+    def list() -> None:
+        breakLine()
+        print("CODIGO    DOCUMENTO    APELLIDO    NOMBRE    NACIMIENTO    NACIONALIDAD")
+        print("-----------------------------------------------------------------------")
+        if (len(data[PACIENTES]) > 0):
+            for item in data[PACIENTES]:
+                print(
+                    f"{item['id']}         {item['documento']} {item['apellido']}  {item['nombre']}    {item['nacimiento']}    {item['nacionalidad']}")
+        else:
+            breakLine()
+            print(input("No hay pacientes cargados. Presione Enter..."))
 
-def addPaciente():
-    cls()
+    def update(index: int, new_data: dict) -> None:
+        data[PACIENTES][index].update(new_data)
+
+    def remove(index: int) -> None:
+        data[PACIENTES].pop(index)
+
+
+def menuCrear() -> None:
+    clear()
     print("#### NUEVO PACIENTE ####")
     paciente = Paciente()
-    data[PACIENTES].append({
-        'id': readTXT(),
-        'documento': paciente.doc,
-        'apellido': paciente.apellido,
-        'nombre': paciente.nombre,
-        'nacimiento': paciente.nacimiento,
-        'nacionalidad': paciente.nacionalidad
-    })
+    id = readTXT()
+    data[PACIENTES].append(iPaciente(paciente, id))
 
 
-def editPaciente():
-    cls()
+def menuListar() -> None:
+    clear()
+    print("#### LISTA DE PACIENTES ####")
+    Paciente.list()
+    breakLine()
+    print(input("Presione Enter para continuar..."))
+
+
+def menuEditar() -> None:
+    clear()
     print("#### ACTUALIZAR PACIENTE ####")
-    codigo = printPacientes()
+    Paciente.list()
+    breakLine()
+    codigo = input("Codigo del paciente: ")
+    if not (isValid(data[PACIENTES], codigo)):
+        clear()
+        print(input(INVALID_CODE))
+        menuEditar()
+    else:
+        clear()
+        id = searchDict(codigo, data[PACIENTES])
+        paciente = Paciente()
+        index = searchIndex(
+            codigo, data[PACIENTES])
+        Paciente.update(index, iPaciente(paciente, id))
 
 
-def deletePaciente():
-    cls()
+def menuRemover() -> None:
+    clear()
     print("#### ELIMINAR PACIENTE ####")
-    codigo = printPacientes()
-    if not (isValid(codigo)):
-        cls()
-        print(input("Codigo Invalido. Presione Enter..."))
-        printPacientes()
+    Paciente.list()
+    breakLine()
+    codigo = input("Codigo del paciente: ")
+    if not (isValid(data[PACIENTES], codigo)):
+        clear()
+        print(input(INVALID_CODE))
+        menuRemover()
     else:
-        data[PACIENTES].pop(searchIndexPaciente(codigo))
+        Paciente.remove(searchIndex(codigo, data[PACIENTES]))
 
 
-def searchIndexPaciente(codigo: str) -> int:
-    i = 0
-    for i in range(len(data[PACIENTES])):
-        if (data[PACIENTES][i]['id'] == codigo):
-            return (i)
-        i += 1
+def iPaciente(entidad: Paciente, id: str) -> dict:
+    return {
+        'id': id,
+        'documento': entidad.doc,
+        'apellido': entidad.apellido,
+        'nombre': entidad.nombre,
+        'nacimiento': entidad.nacimiento,
+        'nacionalidad': entidad.nacionalidad
+    }
 
 
-def isValid(value: str) -> bool:
-    for item in data[PACIENTES]:
-        if (item['id'] == value):
-            return True
-    return False
-
-
-def printPacientes() -> str | None:
-    cls()
-    print("CODIGO    DOCUMENTO    APELLIDO    NOMBRE    NACIMIENTO    NACIONALIDAD")
-    print("-----------------------------------------------------------------------")
-    if (len(data[PACIENTES]) > 0):
-        for item in data[PACIENTES]:
-            print(f"{item['id']}        {item['documento']}    {item['apellido']}         {item['nombre']} {item['nacimiento']}   {item['nacionalidad']}")
-        print("\n")
-        return input("Codigo del paciente: ")
-    else:
-        print("\n")
-        print(input("No hay pacientes cargados. Presione Enter..."))
-        handlerPaciente()
-
-
-def savePaciente(paciente: dict):
-    writeJSON(paciente, PACIENTES)
-
-
-def menu():
-    cls()
+def menu() -> str:
+    clear()
     print("#### Sección Pacientes ####")
-    print("\n")
-    print("1 - Nuevo Paciente")
-    print("2 - Editar Paciente")
-    print("3 - Eliminar Paciente")
+    breakLine()
+    print("1 - Listar Paciente")
+    print("2 - Nuevo Paciente")
+    print("3 - Editar Paciente")
+    print("4 - Eliminar Paciente")
     print("0 - Salir")
-    print("\n")
-    return input("Ingrese una accion: ")
+    breakLine()
+    return input(INPUT_ACTION)
 
 
-def handlerPaciente():
+def handlerPaciente() -> None:
     retorno = '1'
     while (retorno != '0'):
         retorno = menu()
-        if retorno in "0123":
+        if retorno in "01234":
             if (retorno == '1'):
-                addPaciente()
-                savePaciente(data)
-                # cls()
-                print(input("Paciente creado. Presione Enter..."))
+                menuListar()
+                clear()
             elif (retorno == '2'):
-                editPaciente()
-                savePaciente(data)
-                cls()
-                print(input("Paciente actualizado. Presione Enter..."))
+                menuCrear()
+                save(data, PACIENTES)
+                clear()
+                print(input("Paciente creado. Presione Enter..."))
             elif (retorno == '3'):
-                deletePaciente()
-                savePaciente(data)
-                cls()
+                menuEditar()
+                save(data, PACIENTES)
+                clear()
+                print(input("Paciente actualizado. Presione Enter..."))
+            elif (retorno == '4'):
+                menuRemover()
+                save(data, PACIENTES)
+                clear()
                 print(input("Paciente eliminado. Presione Enter..."))
         else:
-            cls()
-            print(input("Codigo Invalido. Presione Enter..."))
+            clear()
+            print(input(INVALID_CODE))

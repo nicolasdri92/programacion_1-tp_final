@@ -1,9 +1,8 @@
-import os
-import json
+import os, json
 
 
 def readTXT():
-    with open("source\\data\\pacienteNext.txt", "r", encoding='utf-8') as archivo:
+    with open("source\\data\\_next.txt", "r", encoding='utf-8') as archivo:
         archivo_read = archivo.read()
     archivo_read = archivo_read
     writeTXT(archivo_read)
@@ -12,7 +11,7 @@ def readTXT():
 
 def writeTXT(value):
     value = str(int(value) + 1)
-    with open(f"source\\data\\pacienteNext.txt", "w", encoding='utf-8') as archivo:
+    with open(f"source\\data\\_next.txt", "w", encoding='utf-8') as archivo:
         archivo.write(value)
 
 

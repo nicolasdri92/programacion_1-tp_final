@@ -1,19 +1,20 @@
-import os
 import sys
 
 from controllers.paciente import handlerPaciente
+from lib.common import *
+from lib.constants import *
 
 
-def menu():
-    os.system("clear")
+def menu() -> str:
+    clear()
     print("#### Instituto Médico Las Luciérnagas ####")
-    print("\n")
+    breakLine()
     print("1 - Sección Paciente")
     print("2 - Sección Historia Clinica")
     print("3 - Sección Profesional")
     print("0 - Salir")
-    print("\n")
-    return input("Ingrese una accion: ")
+    breakLine()
+    return input(INPUT_ACTION)
 
 
 def main() -> None:
@@ -25,15 +26,18 @@ def main() -> None:
                 if (retorno == '1'):
                     handlerPaciente()
                 elif (retorno == '2'):
-                    handlerPaciente()
+                    return
+                    # handlerHistoriaClinica()
                 elif (retorno == '3'):
-                    handlerPaciente()
+                    return
+                    # handlerProfesional()
             else:
-                os.system("clear")
-                print(input("Codigo Invalido. Presione Enter..."))
+                clear()
+                print(input(INVALID_CODE))
     except KeyboardInterrupt:
-        os.system("clear")
-        print("\nEjecución finalizada por el usuario")
+        clear()
+        breakLine()
+        print("Ejecución finalizada por el usuario")
     except Exception as err:
         print(err)
 
