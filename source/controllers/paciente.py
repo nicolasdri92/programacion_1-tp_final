@@ -118,7 +118,6 @@ def handlerPaciente() -> None:
         if retorno in "01234":
             if (retorno == '1'):
                 menuListar()
-                clear()
             elif (retorno == '2'):
                 menuCrear()
                 save(data, PACIENTES)
