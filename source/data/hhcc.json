@@ -1,0 +1,23 @@
+[
+  {
+    "id": "4",
+    "fecha": "25/04/2000",
+    "afeccion": "diarrea",
+    "profesional": "Dri",
+    "observacion": "muchas"
+  },
+  {
+    "id": "0",
+    "fecha": "26/87/2369",
+    "afeccion": "CABEZA",
+    "profesional": "SOTO",
+    "observacion": "MUCHAS"
+  },
+  {
+    "id": "4",
+    "fecha": "26/25/2255",
+    "afeccion": "CODO",
+    "profesional": "DRI",
+    "observacion": "MUCHAS"
+  }
+]

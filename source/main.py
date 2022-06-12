@@ -1,6 +1,7 @@
 import sys
 
 from controllers.paciente import handlerPaciente
+from controllers.hhcc import handlerHHCC
 from lib.common import *
 from lib.constants import *
 
@@ -23,17 +24,13 @@ def main() -> None:
         while (retorno != '0'):
             retorno = menu()
             if retorno in "0123":
-                match retorno:
-                    case '1':
+                    if (retorno == '1'):
                         handlerPaciente()
-                    case '2':
-                        return
-                    # handlerHistoriaClinica()
-                    case '3':
+                    elif (retorno == '2'):
+                        handlerHHCC()
+                    elif (retorno == '3'):
                         return
                     # handlerProfesional()
-                    case '0':
-                        return
             else:
                 clear()
                 print(input(INVALID_CODE))
