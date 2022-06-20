@@ -15,12 +15,12 @@ class Profesional:
 
     def listar() -> None:
         breakLine()
-        print("CODIGO   APELLIDO    NOMBRE  ESPECIALIDAD")
+        print("CODIGO  APELLIDO  NOMBRE  ESPECIALIDAD")
         print("-----------------------------------------")
         if (len(dataProfesional) > 0):
             for item in dataProfesional:
                 print(
-                    f"{item['id']}  {item['apellido']}  {item['nombre']}    {item['especialidad']}")
+                    f"{item['id']}       {item['apellido']}      {item['nombre']} {item['especialidad']}")
         else:
             breakLine()
             print("No hay profesionales cargados")
@@ -63,7 +63,7 @@ def menuEditar() -> None:
             menuEditar()
         else:
             clear()
-            id = searchDict(codigo, dataProfesional)
+            id = searchDict(codigo, dataProfesional)['id']
             profesional = Profesional()
             index = searchIndex(
                 codigo, dataProfesional)

@@ -18,12 +18,12 @@ class Paciente:
 
     def listar() -> None:
         breakLine()
-        print("CODIGO    DOCUMENTO    APELLIDO    NOMBRE    NACIMIENTO    NACIONALIDAD")
+        print("CODIGO  DOCUMENTO  APELLIDO  NOMBRE  EDAD  NACIMIENTO  NACIONALIDAD")
         print("-----------------------------------------------------------------------")
         if (len(dataPaciente) > 0):
             for item in dataPaciente:
                 print(
-                    f"{item['id']}         {item['documento']} {item['apellido']}  {item['nombre']}    {item['nacimiento']}    {item['nacionalidad']}")
+                    f"{item['id']}       {item['documento']} {item['apellido']}     {item['nombre']}  {getEdad(item['nacimiento'])}    {item['nacimiento']}  {item['nacionalidad']}")
         else:
             breakLine()
             print("No hay pacientes cargados")
@@ -61,14 +61,14 @@ def menuEditar() -> None:
     Paciente.listar()
     breakLine()
     if len(dataPaciente) > 0:
-        codigo = inputCode()
+        codigo = input("Codigo del paciente: ")
         if not (isValid(dataPaciente, codigo)):
             clear()
             print(input(INVALID_CODE))
             menuEditar()
         else:
             clear()
-            id = searchDict(codigo, dataPaciente)
+            id = searchDict(codigo, dataPaciente)['id']
             paciente = Paciente()
             index = searchIndex(codigo, dataPaciente)
             Paciente.update(index, iPaciente(paciente, id))
@@ -84,7 +84,7 @@ def menuRemover() -> None:
     Paciente.listar()
     breakLine()
     if len(dataPaciente) > 0:
-        codigo = inputCode()
+        codigo = input("Codigo del paciente: ")
         if not (isValid(dataPaciente, codigo)):
             clear()
             print(input(INVALID_CODE))
@@ -106,10 +106,6 @@ def iPaciente(entidad: Paciente, id: str) -> dict:
         'nacimiento': entidad.nacimiento,
         'nacionalidad': entidad.nacionalidad
     }
-
-
-def inputCode() -> str | None:
-    return input("Codigo del paciente: ")
 
 
 def getNacionalidad() -> str:

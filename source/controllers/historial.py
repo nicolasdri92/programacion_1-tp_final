@@ -1,3 +1,4 @@
+from datetime import datetime
 from controllers.profesional import loadData
 from services.handlerIO import readTXT, readJSON
 from services.helper import *
@@ -10,10 +11,9 @@ class Historial:
 
     def __init__(self) -> None:
         self.fecha = input("Fecha: ")
-        clear()
         self.enfermedad = input("Enfermedad/afección que padece: ")
-        clear()
         Historial.listarProfesional()
+        breakLine()
         if len(dataProfesional) > 0:
             breakLine()
             codigo = input("Codigo del Médico del instituto que lo trató: ")
@@ -23,31 +23,31 @@ class Historial:
                 menuCrear()
             else:
                 clear()
-                self.medico = searchDict(codigo, dataProfesional)
+                self.medico = searchDict(codigo, dataProfesional)['id']
         else:
             print(input("Presione Enter para continuar..."))
         clear()
         self.observacion = input("Observaciones: ")
 
     def listarConsulta(id) -> None:
-        print("CODIGO     FECHA   ENFERMEDAD  MÉDICO  OBSERVACIÓN")
+        print("CODIGO  FECHA      ENFERMEDAD  MÉDICO         OBSERVACIÓN")
         print("------------------------------------------------")
         if (len(dataHHCC[id]) > 0):
             for item in dataHHCC[id]:
                 print(
-                    f"{item['id']}          {item['fecha']} {item['enfermedad']}    {getMedico(item['medico'])}    {item['observacion']}")
+                    f"{item['id']}       {item['fecha']} {item['enfermedad']}   {getMedico(item['medico'])}  {item['observacion']}")
         else:
             breakLine()
             print("No hay consultas cargadas")
 
     def listarPaciente() -> None:
         breakLine()
-        print("CODIGO    DOCUMENTO    APELLIDO    NOMBRE    NACIMIENTO    NACIONALIDAD")
+        print("CODIGO  DOCUMENTO  APELLIDO  NOMBRE  EDAD  NACIMIENTO  NACIONALIDAD")
         print("-----------------------------------------------------------------------")
         if (len(dataPaciente) > 0):
             for item in dataPaciente:
                 print(
-                    f"{item['id']}  {item['documento']} {item['apellido']}  {item['nombre']}    {item['nacimiento']}    {item['nacionalidad']}")
+                    f"{item['id']}       {item['documento']} {item['apellido']}     {item['nombre']}  {getEdad(item['nacimiento'])}    {item['nacimiento']}  {item['nacionalidad']}")
         else:
             breakLine()
             print("No hay pacientes cargados")
@@ -80,7 +80,7 @@ def menuCrear() -> None:
             menuCrear()
         else:
             clear()
-            paciente_id = searchDict(codigo, dataPaciente)
+            paciente_id = searchDict(codigo, dataPaciente)['id']
             historial = Historial()
             id = readTXT(HHCC)
             dataHHCC[paciente_id].append(iHistorial(historial, id))
@@ -103,7 +103,7 @@ def menuListar() -> None:
             menuEditar()
         else:
             clear()
-            id = searchDict(codigo, dataPaciente)
+            id = searchDict(codigo, dataPaciente)['id']
             Historial.listarConsulta(id)
             breakLine()
             print(input("Presione Enter para continuar..."))
@@ -124,7 +124,7 @@ def menuEditar() -> None:
             menuEditar()
         else:
             clear()
-            paciente_id = searchDict(codigo, dataPaciente)
+            paciente_id = searchDict(codigo, dataPaciente)['id']
             Historial.listarConsulta(paciente_id)
             breakLine()
             if len(dataHHCC[paciente_id]) > 0:
@@ -135,7 +135,8 @@ def menuEditar() -> None:
                     menuEditar()
                 else:
                     clear()
-                    consulta_id = searchDict(codigo, dataHHCC[paciente_id])
+                    consulta_id = searchDict(
+                        codigo, dataHHCC[paciente_id])['id']
                     historial = Historial()
                     index = searchIndex(codigo, dataHHCC[paciente_id])
                     Historial.update(consulta_id, index,
